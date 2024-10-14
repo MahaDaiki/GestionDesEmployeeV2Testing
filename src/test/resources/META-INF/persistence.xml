@@ -1,0 +1,40 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+
+    <persistence-unit name="test-persistence-unit">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entity classes -->
+        <class>models.Users</class>
+        <class>models.Employee</class>
+        <class>models.Admin</class>
+        <class>models.Recruiter</class>
+        <class>models.Candidate</class>
+        <class>models.JobOffer</class>
+        <class>models.LeaveRequest</class>
+        <class>models.EmployeeHistory</class>
+        <class>models.CandidateJobOffer</class>
+        <class>models.FamilyAllowance</class>
+
+        <!-- Properties for H2 in-memory database -->
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+
+            <!-- Use H2 Dialect -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
+            <!-- Automatically create and drop the schema for each test -->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+
+            <!-- Show SQL in console (optional) -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
