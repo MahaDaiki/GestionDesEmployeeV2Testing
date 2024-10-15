@@ -2,6 +2,7 @@ package models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "candidate")
@@ -12,6 +13,10 @@ public class Candidate extends Users {
     private String skills;
     @Column(unique = true, nullable = false)
     private String socialSecurityNum;
+
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<CandidateJobOffer> jobApplications;
 
 
     public Candidate() {
@@ -41,6 +46,11 @@ public class Candidate extends Users {
     public void setSocialSecurityNum(String socialSecurityNum) {
         this.socialSecurityNum = socialSecurityNum;
     }
-
+    public List<CandidateJobOffer> getJobApplications() {
+        return jobApplications;
+    }
+    public void setJobApplications(List<CandidateJobOffer> jobApplications) {
+        this.jobApplications = jobApplications;
+    }
 }
 

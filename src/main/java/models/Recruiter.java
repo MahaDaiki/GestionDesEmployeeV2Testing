@@ -1,16 +1,16 @@
 package models;
 
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "recruiter")
 public class Recruiter extends Users {
 
-
+    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    private List<JobOffer> jobOffers;
     public Recruiter() {
         super();
     }
