@@ -28,6 +28,8 @@ public class Employee extends Users {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmployeeHistory> employeeHistories = new ArrayList<>();
 
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private FamilyAllowance familyAllowance;
 
 
     public Employee() {

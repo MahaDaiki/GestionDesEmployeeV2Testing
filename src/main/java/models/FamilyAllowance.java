@@ -11,7 +11,7 @@ public class FamilyAllowance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 

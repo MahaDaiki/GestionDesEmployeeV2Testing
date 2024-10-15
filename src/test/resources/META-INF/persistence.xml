@@ -32,7 +32,6 @@
             <!-- Automatically create and drop the schema for each test -->
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
 
-            <!-- Show SQL in console (optional) -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
