@@ -2,6 +2,7 @@ package models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "joboffer")
@@ -18,6 +19,9 @@ public class JobOffer {
     @ManyToOne
     @JoinColumn(name = "recruiter_id", nullable = false)
     private Recruiter recruiter;
+
+    @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL)
+    private List<CandidateJobOffer> jobApplications;
 
 
     public JobOffer() {
@@ -73,5 +77,11 @@ public class JobOffer {
      public void setPublishDate(LocalDate publishDate) {
         this.publishDate = publishDate;
      }
+    public List<CandidateJobOffer> getJobApplications() {
+        return jobApplications;
+    }
 
+    public void setJobApplications(List<CandidateJobOffer> jobApplications) {
+        this.jobApplications = jobApplications;
+    }
 }
