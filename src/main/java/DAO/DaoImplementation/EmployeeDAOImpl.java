@@ -85,7 +85,6 @@ public class EmployeeDAOImpl implements EmployeeDAOInterface {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw e;
         }
     }
 
@@ -108,7 +107,6 @@ public class EmployeeDAOImpl implements EmployeeDAOInterface {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw e;
         }
 
 
