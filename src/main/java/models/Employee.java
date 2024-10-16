@@ -31,6 +31,9 @@ public class Employee extends Users {
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private FamilyAllowance familyAllowance;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LeaveRequest> leaveRequests = new ArrayList<>();
+
 
     public Employee() {
         super();
@@ -95,6 +98,27 @@ public class Employee extends Users {
     }
     public void setChildCount(int childCount) {
         this.childCount = childCount;
+    }
+    public List<LeaveRequest> getLeaveRequests() {
+        return leaveRequests;
+    }
+    public void setLeaveRequests(List<LeaveRequest> leaveRequests) {
+        this.leaveRequests = leaveRequests;
+    }
+    public List<EmployeeHistory> getEmployeeHistories() {
+        return employeeHistories;
+    }
+
+    public void setEmployeeHistories(List<EmployeeHistory> employeeHistories) {
+        this.employeeHistories = employeeHistories;
+    }
+
+    public FamilyAllowance getFamilyAllowance() {
+        return familyAllowance;
+    }
+
+    public void setFamilyAllowance(FamilyAllowance familyAllowance) {
+        this.familyAllowance = familyAllowance;
     }
 
     @Override
