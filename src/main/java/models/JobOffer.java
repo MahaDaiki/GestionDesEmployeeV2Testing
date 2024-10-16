@@ -20,7 +20,7 @@ public class JobOffer {
     @JoinColumn(name = "recruiter_id", nullable = false)
     private Recruiter recruiter;
 
-    @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CandidateJobOffer> jobApplications;
 
 
