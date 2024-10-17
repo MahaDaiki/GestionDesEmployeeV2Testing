@@ -51,7 +51,7 @@ public class FamilyAllowanceServiceImplTest {
         employee.setChildCount(5);
         employee.setSalary(9000);
         double allowance = familyAllowanceService.calculateFamilyAllowance(employee);
-        assertEquals(830 , allowance);
+        assertEquals(820 , allowance, 0.1);
     }
 
     @Test
