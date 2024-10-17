@@ -144,10 +144,7 @@ public class AuthenticationServiceImplTest {
 
     @Test
     public void testLogout() {
-        // Call the method under test
         authenticationService.logout(session);
-
-        // Verify that the session was invalidated
         verify(session, times(1)).invalidate();
     }
 }

@@ -12,8 +12,20 @@ public class LeaveRequestServiceImpl implements LeaveRequestServiceInt {
     public LeaveRequestServiceImpl() {
         this.LeaveRequestDao = LeaveRequestDao;
     }
+
+
     @Override
     public void createLeaveRequest(LeaveRequest leaveRequest) {
+        List<LeaveRequest> existingRequests = LeaveRequestDao.findLeaveRequestsByEmployeeId(leaveRequest.getEmployee().getId());
+
+        for (LeaveRequest existingRequest : existingRequests) {
+            if (existingRequest.getStatus() == LeaveRequestStatus.APPROVED &&
+                    ((leaveRequest.getStartDate().isBefore(existingRequest.getEndDate()) &&
+                            leaveRequest.getEndDate().isAfter(existingRequest.getStartDate())))) {
+                throw new IllegalArgumentException("The leave request dates overlap with existing approved requests.");
+            }
+        }
+        leaveRequest.setStatus(LeaveRequestStatus.PENDING);
         LeaveRequestDao.createLeaveRequest(leaveRequest);
     }
 
@@ -35,5 +47,21 @@ public class LeaveRequestServiceImpl implements LeaveRequestServiceInt {
     @Override
     public List<LeaveRequest> findLeaveRequestsByEmployeeId(Long employeeId) {
         return LeaveRequestDao.findLeaveRequestsByEmployeeId(employeeId);
+    }
+    private boolean isLeaveRequestValid(LeaveRequest leaveRequest) {
+        List<LeaveRequest> existingRequests = LeaveRequestDao.findLeaveRequestsByEmployeeId(leaveRequest.getEmployee().getId());
+        for (LeaveRequest existingRequest : existingRequests) {
+            if (existingRequest.getStatus() == LeaveRequestStatus.APPROVED) {
+                if (areDatesOverlapping(leaveRequest, existingRequest)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean areDatesOverlapping(LeaveRequest newRequest, LeaveRequest existingRequest) {
+        return !newRequest.getEndDate().isBefore(existingRequest.getStartDate()) &&
+                !newRequest.getStartDate().isAfter(existingRequest.getEndDate());
     }
 }
