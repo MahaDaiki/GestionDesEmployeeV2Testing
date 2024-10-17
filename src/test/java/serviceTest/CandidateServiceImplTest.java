@@ -83,15 +83,25 @@ public class CandidateServiceImplTest {
         candidate.setId(1L);
         candidate.setName("test");
         candidate.setEmail("test@example.com");
-        when(candidateDAO.findCandidateByEmail("test@example.com")).thenReturn(Collections.singletonList(candidate));
+        when(candidateDAO.findCandidateByEmail("test@email.com")).thenReturn(Collections.singletonList(candidate));
 
-        List<Candidate> result = candidateService.findCandidateByEmail("test@example.com");
+        List<Candidate> result = candidateService.findCandidateByEmail("test@email.com");
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("test@example.com", result.get(0).getEmail());
+        assertEquals("test@email.com", result.get(0).getEmail());
 
-        verify(candidateDAO, times(1)).findCandidateByEmail("test@example.com");
+        verify(candidateDAO, times(1)).findCandidateByEmail("test@email.com");
+    }
+    @Test
+    public void testFindCandidateByEmailNoResult() {
+        when(candidateDAO.findCandidateByEmail("unknown@email.com")).thenReturn(Collections.emptyList());
+
+        List<Candidate> result = candidateService.findCandidateByEmail("unknown@email.com");
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(candidateDAO, times(1)).findCandidateByEmail("unknown@email.com");
     }
 
 }
