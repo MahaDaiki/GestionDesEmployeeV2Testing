@@ -82,7 +82,7 @@ public class CandidateServiceImplTest {
         Candidate candidate = new Candidate();
         candidate.setId(1L);
         candidate.setName("test");
-        candidate.setEmail("test@example.com");
+        candidate.setEmail("test@email.com");
         when(candidateDAO.findCandidateByEmail("test@email.com")).thenReturn(Collections.singletonList(candidate));
 
         List<Candidate> result = candidateService.findCandidateByEmail("test@email.com");
