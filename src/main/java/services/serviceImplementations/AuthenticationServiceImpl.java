@@ -24,6 +24,9 @@ public class AuthenticationServiceImpl implements AuthenticationServiceInt {
 
     @Override
     public Candidate loginAsCandidate(String email, String password) {
+        if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Email or password cannot be empty");
+        }
         return authenticationDao.loginAsCandidate(email, password);
     }
 

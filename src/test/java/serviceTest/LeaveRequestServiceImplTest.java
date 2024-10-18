@@ -12,6 +12,7 @@ import services.serviceImplementations.LeaveRequestServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,6 +59,7 @@ public class LeaveRequestServiceImplTest {
         verify(leaveRequestDAO, never()).createLeaveRequest(any());
     }
 
+
     @Test
     public void testFindLeaveRequestById() {
         when(leaveRequestDAO.findLeaveRequestById(1L)).thenReturn(leaveRequest);
@@ -102,4 +104,98 @@ public class LeaveRequestServiceImplTest {
         assertEquals(1, result.size());
         assertEquals(existingRequest, result.get(0));
     }
+    @Test
+    public void testCreateLeaveRequest_OverlappingDates_StartDate() {
+        LeaveRequest existingRequest = new LeaveRequest(LocalDate.of(2024, 10, 15), LocalDate.of(2024, 10, 20), "Vacation", LeaveRequestStatus.APPROVED, employee);
+        when(leaveRequestDAO.findLeaveRequestsByEmployeeId(employee.getId())).thenReturn(Arrays.asList(existingRequest));
+
+        LeaveRequest newRequest = new LeaveRequest(LocalDate.of(2024, 10, 19), LocalDate.of(2024, 10, 25), "Vacation", null, employee);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            leaveRequestServiceImpl.createLeaveRequest(newRequest);
+        });
+
+        assertEquals("The leave request dates overlap with existing approved requests.", exception.getMessage());
+        verify(leaveRequestDAO, never()).createLeaveRequest(any());
+    }
+
+    @Test
+    public void testCreateLeaveRequest_OverlappingDates_EndDate() {
+        LeaveRequest existingRequest = new LeaveRequest(LocalDate.of(2024, 10, 15), LocalDate.of(2024, 10, 20), "Vacation", LeaveRequestStatus.APPROVED, employee);
+        when(leaveRequestDAO.findLeaveRequestsByEmployeeId(employee.getId())).thenReturn(Arrays.asList(existingRequest));
+
+        LeaveRequest newRequest = new LeaveRequest(LocalDate.of(2024, 10, 10), LocalDate.of(2024, 10, 17), "Vacation", null, employee);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            leaveRequestServiceImpl.createLeaveRequest(newRequest);
+        });
+
+        assertEquals("The leave request dates overlap with existing approved requests.", exception.getMessage());
+        verify(leaveRequestDAO, never()).createLeaveRequest(any());
+    }
+
+    @Test
+    public void testCreateLeaveRequest_SameStartEndDate() {
+        LeaveRequest existingRequest = new LeaveRequest(LocalDate.of(2024, 10, 20), LocalDate.of(2024, 10, 25), "Vacation", LeaveRequestStatus.APPROVED, employee);
+        when(leaveRequestDAO.findLeaveRequestsByEmployeeId(employee.getId())).thenReturn(Arrays.asList(existingRequest));
+
+        LeaveRequest newRequest = new LeaveRequest(LocalDate.of(2024, 10, 20), LocalDate.of(2024, 10, 22), "Vacation", null, employee);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            leaveRequestServiceImpl.createLeaveRequest(newRequest);
+        });
+
+        assertEquals("The leave request dates overlap with existing approved requests.", exception.getMessage());
+        verify(leaveRequestDAO, never()).createLeaveRequest(any());
+    }
+
+    @Test
+    public void testAreDatesOverlapping_Overlapping() {
+        LeaveRequest request1 = new LeaveRequest(LocalDate.of(2024, 10, 15), LocalDate.of(2024, 10, 20), "Vacation", LeaveRequestStatus.APPROVED, employee);
+        LeaveRequest request2 = new LeaveRequest(LocalDate.of(2024, 10, 18), LocalDate.of(2024, 10, 22), "Sick Leave", LeaveRequestStatus.PENDING, employee);
+
+        boolean result = leaveRequestServiceImpl.areDatesOverlapping(request1, request2);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testAreDatesOverlapping_NonOverlapping() {
+        LeaveRequest request1 = new LeaveRequest(LocalDate.of(2024, 10, 15), LocalDate.of(2024, 10, 20), "Vacation", LeaveRequestStatus.APPROVED, employee);
+        LeaveRequest request2 = new LeaveRequest(LocalDate.of(2024, 10, 21), LocalDate.of(2024, 10, 25), "Sick Leave", LeaveRequestStatus.PENDING, employee);
+
+        boolean result = leaveRequestServiceImpl.areDatesOverlapping(request1, request2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testAreDatesOverlapping_SameStartDateEndDate() {
+        LeaveRequest request1 = new LeaveRequest(LocalDate.of(2024, 10, 15), LocalDate.of(2024, 10, 20), "Vacation", LeaveRequestStatus.APPROVED, employee);
+        LeaveRequest request2 = new LeaveRequest(LocalDate.of(2024, 10, 20), LocalDate.of(2024, 10, 25), "Sick Leave", LeaveRequestStatus.PENDING, employee);
+
+        boolean result = leaveRequestServiceImpl.areDatesOverlapping(request1, request2);
+
+        assertTrue(result);
+    }
+    @Test
+    public void testIsLeaveRequestValid_NoOverlappingApprovedRequests() {
+        when(leaveRequestDAO.findLeaveRequestsByEmployeeId(employee.getId())).thenReturn(Collections.emptyList());
+
+        boolean isValid = leaveRequestServiceImpl.isLeaveRequestValid(leaveRequest);
+
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void testIsLeaveRequestValid_OverlappingApprovedRequests() {
+        LeaveRequest existingRequest = new LeaveRequest(LocalDate.of(2024, 10, 17), LocalDate.of(2024, 10, 19), "Sick Leave", LeaveRequestStatus.APPROVED, employee);
+
+        when(leaveRequestDAO.findLeaveRequestsByEmployeeId(employee.getId())).thenReturn(Arrays.asList(existingRequest));
+
+        boolean isValid = leaveRequestServiceImpl.isLeaveRequestValid(leaveRequest);
+
+        assertFalse(isValid);
+    }
+
+
+
 }

@@ -48,7 +48,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestServiceInt {
     public List<LeaveRequest> findLeaveRequestsByEmployeeId(Long employeeId) {
         return LeaveRequestDao.findLeaveRequestsByEmployeeId(employeeId);
     }
-    private boolean isLeaveRequestValid(LeaveRequest leaveRequest) {
+    public boolean isLeaveRequestValid(LeaveRequest leaveRequest) {
         List<LeaveRequest> existingRequests = LeaveRequestDao.findLeaveRequestsByEmployeeId(leaveRequest.getEmployee().getId());
         for (LeaveRequest existingRequest : existingRequests) {
             if (existingRequest.getStatus() == LeaveRequestStatus.APPROVED) {
@@ -60,7 +60,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestServiceInt {
         return true;
     }
 
-    private boolean areDatesOverlapping(LeaveRequest newRequest, LeaveRequest existingRequest) {
+    public boolean areDatesOverlapping(LeaveRequest newRequest, LeaveRequest existingRequest) {
         return !newRequest.getEndDate().isBefore(existingRequest.getStartDate()) &&
                 !newRequest.getStartDate().isAfter(existingRequest.getEndDate());
     }

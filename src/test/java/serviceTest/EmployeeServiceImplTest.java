@@ -3,14 +3,12 @@
     import models.Employee;
     import org.junit.jupiter.api.BeforeEach;
     import org.junit.jupiter.api.Test;
-    import org.mockito.ArgumentCaptor;
     import org.mockito.InjectMocks;
     import org.mockito.Mock;
     import org.mockito.MockitoAnnotations;
     import services.serviceImplementations.EmployeeServiceImpl;
 
     import java.time.LocalDate;
-    import java.util.ArrayList;
     import java.util.Arrays;
     import java.util.List;
 
@@ -57,7 +55,7 @@
         verify(employeeDAO).findEmployeeById(1L);
     }
         @Test
-        public void testFindAllEmployees() {
+        public void testGetAllEmployees() {
            List<Employee> employees = Arrays.asList(employee, new Employee(
                     "Jad", "jad@email.com", "0987654321", "password321",
                     LocalDate.of(1999, 7, 15), "S4321", LocalDate.of(2021, 3, 20),

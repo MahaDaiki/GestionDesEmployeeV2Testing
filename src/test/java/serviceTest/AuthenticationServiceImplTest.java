@@ -147,4 +147,26 @@ public class AuthenticationServiceImplTest {
         authenticationService.logout(session);
         verify(session, times(1)).invalidate();
     }
+    @Test
+    public void testRegisterCandidate_DuplicateEmail() {
+        Candidate candidate = new Candidate();
+        candidate.setEmail("duplicate@example.com");
+
+        doThrow(new IllegalArgumentException("Email already exists"))
+                .when(authenticationDao).registerCandidate(candidate);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            authenticationService.registerCandidate(candidate);
+        });
+
+        assertEquals("Email already exists", exception.getMessage());
+    }
+    @Test
+    public void testLoginWithEmptyCredentials() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            authenticationService.loginAsCandidate("", "");
+        });
+    }
+
+
 }
